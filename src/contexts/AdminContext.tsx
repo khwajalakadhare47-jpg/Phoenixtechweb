@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect, ReactNode } from "react
 
 // Synchronized with the fields in your Courses.tsx and Home.tsx
 export interface Course {
-  id: number;
+  id: string;
   title: string;
   subtitle: string;
   description: string;
@@ -14,7 +14,7 @@ export interface Course {
 }
 
 export interface GalleryImage {
-  id: number;
+  id: string;
   title: string;
   url: string;
   category: string;
@@ -22,7 +22,7 @@ export interface GalleryImage {
 }
 
 export interface AdmissionResponse {
-  id: number;
+  id: string;
   email: string; // From Form
   fullName: string;
   mobileNumber: string; // Specific field from Form
@@ -38,155 +38,136 @@ export interface AdmissionResponse {
 interface AdminContextType {
   isLoggedIn: boolean;
   adminUsername: string | null;
-  login: (username: string, password: string) => boolean;
+  login: (username: string, password: string) => Promise<boolean>;
   logout: () => void;
   courses: Course[];
-  addCourse: (course: Course) => void;
-  deleteCourse: (id: number) => void;
-  updateCourse: (course: Course) => void;
+  addCourse: (course: Omit<Course, "id">) => Promise<void>;
+  deleteCourse: (id: string) => Promise<void>;
+  updateCourse: (course: Course) => Promise<void>;
   gallery: GalleryImage[];
-  addImage: (img: GalleryImage) => void;
-  deleteImage: (id: number) => void;
+  addImage: (img: Omit<GalleryImage, "id" | "uploadedAt">) => Promise<void>;
+  deleteImage: (id: string) => Promise<void>;
   responses: AdmissionResponse[];
-  addResponse: (res: any) => void;
-  updateResponseStatus: (id: number, status: AdmissionResponse["status"]) => void;
+  addResponse: (res: Omit<AdmissionResponse, "id" | "submittedAt" | "status">) => Promise<boolean>;
+  updateResponseStatus: (id: string, status: AdmissionResponse["status"]) => Promise<void>;
 }
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
-const ADMIN_CREDENTIALS = { username: "irfan", password: "irfan@123" };
+const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-const DEFAULT_COURSES: Course[] = [
-  {
-    id: 1,
-    title: "MS-CIT",
-    subtitle: "Maharashtra State Certificate in Information Technology",
-    iconType: "Award",
-    duration: "3 Months",
-    target: "Students, Job seekers, Government employees",
-    description: "Government of Maharashtra approved certification program by MKCL. This comprehensive course covers essential computer skills required in today's digital workplace.",
-    highlights: [
-      "Government approved certification",
-      "Recognized by MKCL",
-      "Theory and practical training",
-      "Official examination center",
-      "Certificate valid across Maharashtra",
-      "Mandatory for government jobs"
-    ],
-    syllabus: [
-      "Introduction to Computers",
-      "Windows Operating System",
-      "MS Word - Document Processing",
-      "MS Excel - Spreadsheets",
-      "MS PowerPoint - Presentations",
-      "Internet & Email",
-      "Digital Security"
-    ]
-  },
-  {
-    id: 2,
-    title: "Basic Computer Course",
-    subtitle: "Foundation Course for Beginners",
-    iconType: "Monitor",
-    duration: "1-2 Months",
-    target: "Complete beginners, School students, Homemakers",
-    description: "Perfect for those starting their computer journey. Learn fundamental concepts and gain confidence in using computers for daily tasks.",
-    highlights: [
-      "No prior knowledge required",
-      "Hands-on practical training",
-      "Learn at your own pace",
-      "Certificate on completion",
-      "Typing speed development",
-      "Real-world applications"
-    ],
-    syllabus: [
-      "Computer Basics & Hardware",
-      "Keyboard & Mouse Usage",
-      "Typing Practice",
-      "File Management",
-      "Internet Browsing",
-      "Email Usage",
-      "Basic MS Office"
-    ]
-  },
-  {
-    id: 3,
-    title: "Coding Classes for Students",
-    subtitle: "Programming for Young Learners",
-    iconType: "Code",
-    duration: "3-6 Months",
-    target: "Students (Class 6-12)",
-    description: "Introduce your child to the world of programming with age-appropriate courses designed to build logical thinking and problem-solving skills.",
-    highlights: [
-      "Age-appropriate curriculum",
-      "Visual programming with Scratch",
-      "Web development basics",
-      "Python programming",
-      "Project-based learning",
-      "Creative and logical thinking"
-    ],
-    syllabus: [
-      "Scratch Programming (Beginners)",
-      "HTML & CSS Basics",
-      "JavaScript Introduction",
-      "Python Fundamentals",
-      "Game Development Concepts",
-      "Project Work",
-      "Problem Solving"
-    ]
-  },
-  {
-    id: 4,
-    title: "English Speaking Course",
-    subtitle: "Communicate with Confidence",
-    iconType: "MessageSquare",
-    duration: "Flexible Duration",
-    target: "All age groups, Students, Professionals",
-    description: "Improve your English speaking skills, build confidence, and enhance your communication abilities for personal and professional growth.",
-    highlights: [
-      "Grammar fundamentals",
-      "Spoken English practice",
-      "Vocabulary building",
-      "Confidence development",
-      "Interactive sessions",
-      "Personality development"
-    ],
-    syllabus: [
-      "Basic Grammar Rules",
-      "Vocabulary Enhancement",
-      "Pronunciation Practice",
-      "Sentence Formation",
-      "Conversation Skills",
-      "Public Speaking Basics",
-      "Interview Preparation"
-    ]
+const getToken = () => localStorage.getItem("adminToken");
+
+const apiRequest = async (path: string, options: RequestInit = {}) => {
+  const token = getToken();
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+    ...(options.headers as Record<string, string>),
+  };
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
   }
-];
+
+  const res = await fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers,
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text || "Request failed");
+  }
+  return res.json();
+};
 
 export function AdminProvider({ children }: { children: ReactNode }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem("adminAuth") === "true");
-  const [adminUsername, setAdminUsername] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => Boolean(getToken()));
+  const [adminUsername, setAdminUsername] = useState<string | null>(() => localStorage.getItem("adminUsername"));
 
-  // Initialize data from LocalStorage with defaults for courses
-  const [courses, setCourses] = useState<Course[]>(() => {
-    const stored = localStorage.getItem("phx_courses");
-    return stored ? JSON.parse(stored) : DEFAULT_COURSES;
-  });
-  const [gallery, setGallery] = useState<GalleryImage[]>(() => JSON.parse(localStorage.getItem("phx_gallery") || "[]"));
-  const [responses, setResponses] = useState<AdmissionResponse[]>(() => JSON.parse(localStorage.getItem("phx_responses") || "[]"));
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [gallery, setGallery] = useState<GalleryImage[]>([]);
+  const [responses, setResponses] = useState<AdmissionResponse[]>([]);
 
-  // Sync data to LocalStorage
   useEffect(() => {
-    localStorage.setItem("phx_courses", JSON.stringify(courses));
-    localStorage.setItem("phx_gallery", JSON.stringify(gallery));
-    localStorage.setItem("phx_responses", JSON.stringify(responses));
-  }, [courses, gallery, responses]);
+    const loadPublicData = async () => {
+      try {
+        const [coursesData, galleryData] = await Promise.all([
+          apiRequest("/api/courses"),
+          apiRequest("/api/gallery"),
+        ]);
 
-  const login = (username: string, password: string): boolean => {
-    if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+        setCourses(
+          coursesData.map((c: any) => ({
+            id: c._id,
+            title: c.title,
+            subtitle: c.subtitle,
+            description: c.description,
+            duration: c.duration,
+            target: c.target,
+            highlights: c.highlights || [],
+            syllabus: c.syllabus || [],
+            iconType: c.iconType || "Award",
+          }))
+        );
+
+        setGallery(
+          galleryData.map((g: any) => ({
+            id: g._id,
+            title: g.title,
+            url: g.imageUrl,
+            category: g.category || "general",
+            uploadedAt: g.createdAt ? new Date(g.createdAt).toLocaleDateString() : "",
+          }))
+        );
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    loadPublicData();
+  }, []);
+
+  useEffect(() => {
+    const loadResponses = async () => {
+      if (!isLoggedIn) {
+        setResponses([]);
+        return;
+      }
+      try {
+        const data = await apiRequest("/api/admissions");
+        setResponses(
+          data.map((r: any) => ({
+            id: r._id,
+            email: r.email,
+            fullName: r.fullName,
+            mobileNumber: r.mobileNumber,
+            inquiryType: r.inquiryType,
+            currentClass: r.currentClass,
+            interestedCourses: r.interestedCourses || [],
+            preferredBatch: r.preferredBatch,
+            consentToContact: r.consentToContact,
+            submittedAt: r.createdAt ? new Date(r.createdAt).toLocaleDateString() : "",
+            status: r.status || "new",
+          }))
+        );
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    loadResponses();
+  }, [isLoggedIn]);
+
+  const login = async (username: string, password: string): Promise<boolean> => {
+    const result = await apiRequest("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ username, password }),
+    });
+    if (result?.token) {
+      localStorage.setItem("adminToken", result.token);
+      localStorage.setItem("adminUsername", result.admin?.username || username);
       setIsLoggedIn(true);
-      setAdminUsername(username);
-      localStorage.setItem("adminAuth", "true");
+      setAdminUsername(result.admin?.username || username);
       return true;
     }
     return false;
@@ -195,20 +176,129 @@ export function AdminProvider({ children }: { children: ReactNode }) {
   const logout = () => {
     setIsLoggedIn(false);
     setAdminUsername(null);
-    localStorage.removeItem("adminAuth");
+    localStorage.removeItem("adminToken");
+    localStorage.removeItem("adminUsername");
   };
 
-  const addCourse = (c: Course) => setCourses([c, ...courses]);
-  const deleteCourse = (id: number) => setCourses(courses.filter(c => c.id !== id));
-  const updateCourse = (updatedCourse: Course) => setCourses(courses.map(c => c.id === updatedCourse.id ? updatedCourse : c));
-  const addImage = (img: GalleryImage) => setGallery([img, ...gallery]);
-  const deleteImage = (id: number) => setGallery(gallery.filter(i => i.id !== id));
-  const addResponse = (data: any) => {
-    const newRes = { ...data, id: Date.now(), submittedAt: new Date().toLocaleDateString(), status: "new" };
-    setResponses([newRes, ...responses]);
+  const addCourse = async (c: Omit<Course, "id">) => {
+    const created = await apiRequest("/api/courses", {
+      method: "POST",
+      body: JSON.stringify(c),
+    });
+    setCourses((prev) => [
+      {
+        id: created._id,
+        title: created.title,
+        subtitle: created.subtitle,
+        description: created.description,
+        duration: created.duration,
+        target: created.target,
+        highlights: created.highlights || [],
+        syllabus: created.syllabus || [],
+        iconType: created.iconType || "Award",
+      },
+      ...prev,
+    ]);
   };
-  const updateResponseStatus = (id: number, status: AdmissionResponse["status"]) => {
-    setResponses(responses.map(r => r.id === id ? { ...r, status } : r));
+
+  const deleteCourse = async (id: string) => {
+    await apiRequest(`/api/courses/${id}`, { method: "DELETE" });
+    setCourses((prev) => prev.filter((c) => c.id !== id));
+  };
+
+  const updateCourse = async (updatedCourse: Course) => {
+    const saved = await apiRequest(`/api/courses/${updatedCourse.id}`, {
+      method: "PUT",
+      body: JSON.stringify(updatedCourse),
+    });
+    setCourses((prev) =>
+      prev.map((c) =>
+        c.id === updatedCourse.id
+          ? {
+              id: saved._id,
+              title: saved.title,
+              subtitle: saved.subtitle,
+              description: saved.description,
+              duration: saved.duration,
+              target: saved.target,
+              highlights: saved.highlights || [],
+              syllabus: saved.syllabus || [],
+              iconType: saved.iconType || "Award",
+            }
+          : c
+      )
+    );
+  };
+
+  const addImage = async (img: Omit<GalleryImage, "id" | "uploadedAt">) => {
+    const created = await apiRequest("/api/gallery", {
+      method: "POST",
+      body: JSON.stringify({
+        title: img.title,
+        imageUrl: img.url,
+        category: img.category,
+      }),
+    });
+    setGallery((prev) => [
+      {
+        id: created._id,
+        title: created.title,
+        url: created.imageUrl,
+        category: created.category || "general",
+        uploadedAt: created.createdAt ? new Date(created.createdAt).toLocaleDateString() : "",
+      },
+      ...prev,
+    ]);
+  };
+
+  const deleteImage = async (id: string) => {
+    await apiRequest(`/api/gallery/${id}`, { method: "DELETE" });
+    setGallery((prev) => prev.filter((i) => i.id !== id));
+  };
+
+  const addResponse = async (
+    data: Omit<AdmissionResponse, "id" | "submittedAt" | "status">
+  ) => {
+    try {
+      const created = await apiRequest("/api/admissions", {
+        method: "POST",
+        body: JSON.stringify(data),
+      });
+      if (isLoggedIn) {
+        setResponses((prev) => [
+          {
+            id: created._id,
+            email: created.email,
+            fullName: created.fullName,
+            mobileNumber: created.mobileNumber,
+            inquiryType: created.inquiryType,
+            currentClass: created.currentClass,
+            interestedCourses: created.interestedCourses || [],
+            preferredBatch: created.preferredBatch,
+            consentToContact: created.consentToContact,
+            submittedAt: created.createdAt ? new Date(created.createdAt).toLocaleDateString() : "",
+            status: created.status || "new",
+          },
+          ...prev,
+        ]);
+      }
+      return true;
+    } catch (err) {
+      console.error(err);
+      return false;
+    }
+  };
+
+  const updateResponseStatus = async (id: string, status: AdmissionResponse["status"]) => {
+    const updated = await apiRequest(`/api/admissions/${id}/status`, {
+      method: "PATCH",
+      body: JSON.stringify({ status }),
+    });
+    setResponses((prev) =>
+      prev.map((r) =>
+        r.id === id ? { ...r, status: updated.status || status } : r
+      )
+    );
   };
 
   return (

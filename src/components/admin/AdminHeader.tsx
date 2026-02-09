@@ -1,4 +1,4 @@
-import { LogOut, Menu, LayoutDashboard, MessageSquare, Image, BookOpen, Eye, X } from "lucide-react";
+import { LogOut, Menu, LayoutDashboard, MessageSquare, Image, BookOpen, X } from "lucide-react";
 import logoImage from "../../assets/logophoneix.png";
 import { useAdmin } from "../../contexts/AdminContext";
 import { useState } from "react";
@@ -20,7 +20,6 @@ export function AdminHeader({
     { id: "responses", label: "Responses", icon: MessageSquare },
     { id: "gallery", label: "Gallery", icon: Image },
     { id: "courses", label: "Courses", icon: BookOpen },
-    { id: "preview", label: "Preview", icon: Eye },
   ];
 
   const handleLogout = () => {

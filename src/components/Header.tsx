@@ -74,10 +74,10 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
                   ? "bg-red-600 text-white"
                   : "text-[#0F0F12] hover:bg-red-100 border-2 border-red-600"
               }`}
-              title="Admin Panel"
+              title="Back to Admin Panel"
             >
               <LogIn className="w-4 h-4" />
-              Admin
+              Back to Admin
             </button>
           </nav>
 
@@ -120,7 +120,7 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
               }`}
             >
               <LogIn className="w-4 h-4" />
-              Admin Panel
+              Back to Admin
             </button>
           </nav>
         )}

@@ -17,9 +17,10 @@ interface DashboardStats {
 
 interface AdminDashboardProps {
   onNavigate: (section: string) => void;
+  onExitToSite: () => void;
 }
 
-export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
+export function AdminDashboard({ onNavigate, onExitToSite }: AdminDashboardProps) {
   const [stats] = useState<DashboardStats>({
     totalVisitors: 1250,
     admissionRequests: 24,
@@ -128,7 +129,6 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
               { label: "View New Submissions", color: "bg-purple-50 text-purple-700", nav: "responses", emoji: "📋" },
               { label: "Add Gallery Images", color: "bg-amber-50 text-amber-700", nav: "gallery", emoji: "🖼️" },
               { label: "Create New Course", color: "bg-green-50 text-green-700", nav: "courses", emoji: "📚" },
-              { label: "Preview Website", color: "bg-blue-50 text-blue-700", nav: "preview", emoji: "👁️" }
             ].map((btn, i) => (
               <button
                 key={i}
@@ -139,6 +139,13 @@ export function AdminDashboard({ onNavigate }: AdminDashboardProps) {
                 {btn.label}
               </button>
             ))}
+            <button
+              onClick={onExitToSite}
+              className="w-full bg-blue-50 text-blue-700 p-4 rounded-xl hover:opacity-80 transition font-bold text-sm text-left flex items-center gap-3"
+            >
+              <span className="text-base">🏠</span>
+              Back to Website
+            </button>
           </div>
         </div>
       </div>

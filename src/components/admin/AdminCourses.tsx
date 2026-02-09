@@ -17,7 +17,7 @@ import { useAdmin, Course } from "../../contexts/AdminContext";
 export function AdminCourses() {
   const { courses, addCourse, deleteCourse, updateCourse } = useAdmin();
   const [showAddForm, setShowAddForm] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [formData, setFormData] = useState({
     title: "",
@@ -39,50 +39,25 @@ export function AdminCourses() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const addHighlight = () => {
-    if (highlightInput.trim()) {
-      setFormData((prev) => ({
-        ...prev,
-        highlights: [...prev.highlights, highlightInput.trim()],
-      }));
-      setHighlightInput("");
-    }
-  };
+  const parseCommaList = (value: string) =>
+    value
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
 
-  const removeHighlight = (index: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      highlights: prev.highlights.filter((_, i) => i !== index),
-    }));
-  };
-
-  const addSyllabus = () => {
-    if (syllabusInput.trim()) {
-      setFormData((prev) => ({
-        ...prev,
-        syllabus: [...prev.syllabus, syllabusInput.trim()],
-      }));
-      setSyllabusInput("");
-    }
-  };
-
-  const removeSyllabus = (index: number) => {
-    setFormData((prev) => ({
-      ...prev,
-      syllabus: prev.syllabus.filter((_, i) => i !== index),
-    }));
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const highlights = parseCommaList(highlightInput);
+    const syllabus = parseCommaList(syllabusInput);
+
     if (
       !formData.title ||
       !formData.subtitle ||
       !formData.description ||
       !formData.duration ||
       !formData.target ||
-      formData.highlights.length === 0 ||
-      formData.syllabus.length === 0
+      highlights.length === 0 ||
+      syllabus.length === 0
     ) {
       alert("Please fill in all fields including highlights and syllabus");
       return;
@@ -93,16 +68,18 @@ export function AdminCourses() {
       const updatedCourse: Course = {
         id: editingId,
         ...formData,
+        highlights,
+        syllabus,
       };
-      updateCourse(updatedCourse);
+      await updateCourse(updatedCourse);
       setEditingId(null);
     } else {
       // Add new course
-      const newCourse: Course = {
-        id: Date.now(),
+      await addCourse({
         ...formData,
-      };
-      addCourse(newCourse);
+        highlights,
+        syllabus,
+      });
     }
 
     resetForm();
@@ -135,13 +112,15 @@ export function AdminCourses() {
       syllabus: course.syllabus,
       iconType: course.iconType,
     });
+    setHighlightInput(course.highlights.join(", "));
+    setSyllabusInput(course.syllabus.join(", "));
     setEditingId(course.id);
     setShowAddForm(true);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this course?")) {
-      deleteCourse(id);
+      await deleteCourse(id);
     }
   };
 
@@ -321,45 +300,16 @@ export function AdminCourses() {
               <label className="block text-xs sm:text-sm font-medium text-[#4A4A4A] mb-2">
                 Course Highlights *
               </label>
-              <div className="flex gap-2 mb-2">
-                <input
-                  type="text"
-                  value={highlightInput}
-                  onChange={(e) => setHighlightInput(e.target.value)}
-                  placeholder="Add highlight and press Add..."
-                  className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C9A24D] text-sm"
-                  onKeyPress={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      addHighlight();
-                    }
-                  }}
-                />
-                <button
-                  type="button"
-                  onClick={addHighlight}
-                  className="px-3 sm:px-4 py-2 bg-[#C9A24D] text-white rounded-lg hover:bg-[#B89040] transition text-sm"
-                >
-                  Add
-                </button>
-              </div>
-              <div className="space-y-2">
-                {formData.highlights.map((highlight, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center justify-between px-3 py-2 bg-amber-50 border border-amber-200 rounded-lg text-sm"
-                  >
-                    <span>{highlight}</span>
-                    <button
-                      type="button"
-                      onClick={() => removeHighlight(idx)}
-                      className="text-red-600 hover:text-red-800"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                ))}
-              </div>
+              <input
+                type="text"
+                value={highlightInput}
+                onChange={(e) => setHighlightInput(e.target.value)}
+                placeholder="e.g., Industry projects, Certificate, Placement support"
+                className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C9A24D] text-sm"
+              />
+              <p className="text-[11px] sm:text-xs text-gray-500 mt-2">
+                Separate each highlight with a comma.
+              </p>
             </div>
 
             {/* Syllabus */}
@@ -367,45 +317,16 @@ export function AdminCourses() {
               <label className="block text-xs sm:text-sm font-medium text-[#4A4A4A] mb-2">
                 Syllabus (What You'll Learn) *
               </label>
-              <div className="flex gap-2 mb-2">
-                <input
-                  type="text"
-                  value={syllabusInput}
-                  onChange={(e) => setSyllabusInput(e.target.value)}
-                  placeholder="Add topic and press Add..."
-                  className="flex-1 px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C9A24D] text-sm"
-                  onKeyPress={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      addSyllabus();
-                    }
-                  }}
-                />
-                <button
-                  type="button"
-                  onClick={addSyllabus}
-                  className="px-3 sm:px-4 py-2 bg-[#C9A24D] text-white rounded-lg hover:bg-[#B89040] transition text-sm"
-                >
-                  Add
-                </button>
-              </div>
-              <div className="space-y-2">
-                {formData.syllabus.map((topic, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center justify-between px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg text-sm"
-                  >
-                    <span>{topic}</span>
-                    <button
-                      type="button"
-                      onClick={() => removeSyllabus(idx)}
-                      className="text-red-600 hover:text-red-800"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                ))}
-              </div>
+              <input
+                type="text"
+                value={syllabusInput}
+                onChange={(e) => setSyllabusInput(e.target.value)}
+                placeholder="e.g., Basics, Tools, Projects, Interview prep"
+                className="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#C9A24D] text-sm"
+              />
+              <p className="text-[11px] sm:text-xs text-gray-500 mt-2">
+                Separate each topic with a comma.
+              </p>
             </div>
 
             {/* Buttons */}

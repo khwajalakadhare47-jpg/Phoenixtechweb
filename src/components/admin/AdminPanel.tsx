@@ -5,17 +5,19 @@ import { AdminDashboard } from "./AdminDashboard";
 import { AdminResponses } from "./AdminResponses";
 import { AdminGallery } from "./AdminGallery";
 import { AdminCourses } from "./AdminCourses";
-import { AdminPreview } from "./AdminPreview";
 import { useAdmin } from "../../contexts/AdminContext";
 
 type AdminSection =
   | "dashboard"
   | "responses"
   | "gallery"
-  | "courses"
-  | "preview";
+  | "courses";
 
-export function AdminPanel() {
+interface AdminPanelProps {
+  onExitToSite: () => void;
+}
+
+export function AdminPanel({ onExitToSite }: AdminPanelProps) {
   const { isLoggedIn } = useAdmin();
   const [currentSection, setCurrentSection] =
     useState<AdminSection>("dashboard");
@@ -31,17 +33,15 @@ export function AdminPanel() {
 
     switch (currentSection) {
       case "dashboard":
-        return <AdminDashboard onNavigate={navigate} />;
+        return <AdminDashboard onNavigate={navigate} onExitToSite={onExitToSite} />;
       case "responses":
         return <AdminResponses />;
       case "gallery":
         return <AdminGallery />;
       case "courses":
         return <AdminCourses />;
-      case "preview":
-        return <AdminPreview />;
       default:
-        return <AdminDashboard onNavigate={navigate} />;
+        return <AdminDashboard onNavigate={navigate} onExitToSite={onExitToSite} />;
     }
   };
 
@@ -51,6 +51,7 @@ export function AdminPanel() {
       <AdminNavbar
         currentSection={currentSection}
         onNavigate={(section) => setCurrentSection(section as AdminSection)}
+        onExitToSite={onExitToSite}
       />
 
       {/* Main Content Area */}

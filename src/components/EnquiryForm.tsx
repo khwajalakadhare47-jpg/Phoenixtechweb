@@ -12,12 +12,21 @@ export function EnquiryForm() {
     preferredBatch: "", consentToContact: ""
   });
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    addResponse(formData); // Sends all Google Form fields to Admin
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
+    setError("");
+    setIsSubmitting(true);
+    const success = await addResponse(formData); // Sends all form fields to backend
+    if (success) {
+      setSubmitted(true);
+      setTimeout(() => setSubmitted(false), 3000);
+    } else {
+      setError("Submission failed. Please try again.");
+    }
+    setIsSubmitting(false);
   };
 
   const handleCourseChange = (course: string) => {
@@ -38,6 +47,11 @@ export function EnquiryForm() {
       </CardHeader>
       <CardContent className="p-6 space-y-4">
         <form onSubmit={handleSubmit} className="space-y-4">
+          {error && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded text-sm text-red-700">
+              {error}
+            </div>
+          )}
           {/* Email and Name */}
           <input className="w-full p-3 border rounded" placeholder="Email *" type="email" required 
             onChange={e => setFormData({...formData, email: e.target.value})} />
@@ -84,7 +98,7 @@ export function EnquiryForm() {
             <span className="text-sm">I consent to be contacted by Phoenix Tech Academy *</span>
           </div>
 
-          <Button type="submit" className="w-full bg-[#C9A24D] hover:bg-[#b8923d] text-white font-bold">
+          <Button type="submit" disabled={isSubmitting} className="w-full bg-[#C9A24D] hover:bg-[#b8923d] text-white font-bold disabled:opacity-60">
             <Send className="w-4 h-4 mr-2" /> Submit Enquiry
           </Button>
         </form>

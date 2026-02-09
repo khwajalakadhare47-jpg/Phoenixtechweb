@@ -31,7 +31,14 @@ function App() {
       case "contact": 
         return <Contact />;
       case "admin": 
-        return <AdminPanel />;
+        return (
+          <AdminPanel
+            onExitToSite={() => {
+              setCurrentPage("home");
+              window.scrollTo(0, 0);
+            }}
+          />
+        );
       default: 
         return <Home onNavigate={setCurrentPage} />;
     }

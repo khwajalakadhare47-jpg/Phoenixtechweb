@@ -44,31 +44,27 @@ export function AdminGallery() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.title || !imageFile || !imagePreview) {
       alert("Please fill in all fields and select an image");
       return;
     }
 
-    const newImage = {
-      id: Date.now(),
+    await addImage({
       title: formData.title,
       url: imagePreview, // base64 image data
-      uploadedAt: new Date().toLocaleDateString(),
       category: formData.category,
-    };
-
-    addImage(newImage);
+    });
     setFormData({ title: "", category: "campus" });
     setImageFile(null);
     setImagePreview("");
     setShowUploadForm(false);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this image?")) {
-      deleteImage(id);
+      await deleteImage(id);
     }
   };
 
