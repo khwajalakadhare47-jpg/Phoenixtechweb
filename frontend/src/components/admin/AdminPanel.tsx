@@ -51,7 +51,7 @@ export function AdminPanel({ onExitToSite }: AdminPanelProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col">
+    <div className="min-h-screen bg-[#F7F5F0] flex flex-col">
       {/* Horizontal Navbar at the top */}
       <AdminNavbar
         currentSection={currentSection}
