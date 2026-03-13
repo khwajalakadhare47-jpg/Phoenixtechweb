@@ -14,15 +14,35 @@ const app = express();
 
 connectDB();
 
+const normalizeOrigin = (origin = "") => origin.trim().replace(/\/$/, "");
 const corsOriginEnv = process.env.CORS_ORIGIN || "*";
 const corsOrigins = corsOriginEnv
   .split(",")
-  .map((o) => o.trim())
+  .map((o) => normalizeOrigin(o))
   .filter(Boolean);
 
 app.use(
   cors({
-    origin: corsOrigins.includes("*") ? "*" : corsOrigins,
+    origin: (requestOrigin, callback) => {
+      if (corsOrigins.includes("*")) {
+        callback(null, true);
+        return;
+      }
+
+      if (!requestOrigin) {
+        callback(null, true);
+        return;
+      }
+
+      const normalizedRequestOrigin = normalizeOrigin(requestOrigin);
+      const isAllowed = corsOrigins.includes(normalizedRequestOrigin);
+
+      callback(isAllowed ? null : new Error("CORS not allowed"), isAllowed);
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true,
+    optionsSuccessStatus: 204,
   })
 );
 app.use(express.json({ limit: "10mb" }));

@@ -61,9 +61,11 @@ const getToken = () => localStorage.getItem("adminToken");
 const apiRequest = async (path: string, options: RequestInit = {}) => {
   const token = getToken();
   const headers: Record<string, string> = {
-    "Content-Type": "application/json",
     ...(options.headers as Record<string, string>),
   };
+  if (options.body && !headers["Content-Type"]) {
+    headers["Content-Type"] = "application/json";
+  }
   if (token) {
     headers.Authorization = `Bearer ${token}`;
   }
