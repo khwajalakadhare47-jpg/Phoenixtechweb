@@ -14,7 +14,7 @@ const app = express();
 
 connectDB();
 
-const normalizeOrigin = (origin = "") => origin.trim().replace(/\/$/, "");
+const normalizeOrigin = (origin = "") => origin.trim().toLowerCase().replace(/\/$/, "");
 const corsOriginEnv = process.env.CORS_ORIGIN || "*";
 const corsOrigins = corsOriginEnv
   .split(",")
@@ -35,7 +35,8 @@ app.use(
       }
 
       const normalizedRequestOrigin = normalizeOrigin(requestOrigin);
-      const isAllowed = corsOrigins.includes(normalizedRequestOrigin);
+      const isNetlifyOrigin = normalizedRequestOrigin.endsWith(".netlify.app");
+      const isAllowed = corsOrigins.includes(normalizedRequestOrigin) || isNetlifyOrigin;
 
       callback(isAllowed ? null : new Error("CORS not allowed"), isAllowed);
     },
