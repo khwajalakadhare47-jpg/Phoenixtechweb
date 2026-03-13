@@ -1,6 +1,7 @@
 import { Menu, X, LogIn } from "lucide-react";
 import { useState } from "react";
 import logoImage from "../assets/logophoneix.png";
+import { useAdmin } from "../contexts/AdminContext";
 
 type Page = "home" | "about" | "courses" | "admissions" | "gallery" | "contact" | "admin";
 
@@ -11,6 +12,7 @@ interface HeaderProps {
 
 export function Header({ currentPage, onNavigate }: HeaderProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { isLoggedIn } = useAdmin();
 
   const navItems = [
     { name: "Home", id: "home" },
@@ -74,10 +76,10 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
                   ? "bg-red-600 text-white"
                   : "text-[#0F0F12] hover:bg-red-100 border-2 border-red-600"
               }`}
-              title="Back to Admin Panel"
+              title={isLoggedIn ? "Back to Admin Panel" : "Admin Login"}
             >
               <LogIn className="w-4 h-4" />
-              Back to Admin
+              {isLoggedIn ? "Back to Admin" : "Admin Login"}
             </button>
           </nav>
 
@@ -120,7 +122,7 @@ export function Header({ currentPage, onNavigate }: HeaderProps) {
               }`}
             >
               <LogIn className="w-4 h-4" />
-              Back to Admin
+              {isLoggedIn ? "Back to Admin" : "Admin Login"}
             </button>
           </nav>
         )}

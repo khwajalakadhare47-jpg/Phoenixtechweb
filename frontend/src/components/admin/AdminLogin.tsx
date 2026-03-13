@@ -2,16 +2,18 @@ import { useState } from "react";
 import {
   AlertCircle,
   Loader2,
-  Lock
+  Lock,
+  ArrowLeft
 } from "lucide-react";
 import logoImage from "../../assets/logophoneix.png";
 import { useAdmin } from "../../contexts/AdminContext";
 
 interface AdminLoginProps {
   onLoginSuccess: () => void;
+  onExitToSite: () => void;
 }
 
-export function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
+export function AdminLogin({ onLoginSuccess, onExitToSite }: AdminLoginProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -65,6 +67,16 @@ export function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
       
       {/* Glass Card */}
       <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl border border-gray-200 p-6 sm:p-8">
+        <div className="mb-4">
+          <button
+            type="button"
+            onClick={onExitToSite}
+            className="inline-flex items-center gap-2 text-sm font-semibold text-[#0F0F12] hover:text-[#1F2933]"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Website
+          </button>
+        </div>
         
         {/* Logo Section */}
         <div className="text-center mb-8">

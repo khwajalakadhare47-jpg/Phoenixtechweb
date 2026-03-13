@@ -11,13 +11,13 @@ export function About() {
           <div className="text-center mb-8 sm:mb-12">
             {/* Logo Display */}
             <div className="flex justify-center mb-6">
-              <img 
-                src={logoImage} 
-                alt="Phoenix Tech Academy Logo" 
+              <img
+                src={logoImage}
+                alt="Phoenix Tech Academy Logo"
                 className="h-20 w-20 sm:h-24 sm:w-24 md:h-28 md:w-28 object-contain"
               />
             </div>
-            
+
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-[#0F0F12] mb-4 sm:mb-6">
               About Phoenix Tech Academy
             </h1>
@@ -39,15 +39,12 @@ export function About() {
               <p className="text-sm sm:text-base text-[#4A4A4A] mb-3 sm:mb-4 leading-relaxed">
                 Phoenix Tech Academy is a premier computer and skill development institute located in Hadapsar, Pune. We are dedicated to providing quality education and training to students, professionals, and individuals seeking to enhance their computer skills.
               </p>
-              <p className="text-sm sm:text-base text-[#4A4A4A] mb-3 sm:mb-4 leading-relaxed">
-                As an authorized training center affiliated with MKCL (Maharashtra Knowledge Corporation Limited), we offer government-approved MS-CIT certification along with other professional courses designed to meet industry standards.
-              </p>
               <p className="text-sm sm:text-base text-[#4A4A4A] leading-relaxed">
-                Part of Alpha Groups and Co. Pvt. Ltd., we combine academic excellence with practical training to ensure our students are well-prepared for the digital age.
+                As an authorized training center affiliated with MKCL (Maharashtra Knowledge Corporation Limited), we offer government-approved MS-CIT certification along with other professional courses designed to meet industry standards.
               </p>
             </div>
             <div className="rounded-lg overflow-hidden shadow-lg">
-              <img 
+              <img
                 src="https://images.unsplash.com/photo-1763568258299-0bac211f204e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0ZWNobm9sb2d5JTIwZWR1Y2F0aW9uJTIwY29kaW5nfGVufDF8fHx8MTc3MDIxMTcyMXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
                 alt="Technology education"
                 className="w-full h-48 sm:h-64 md:h-full object-cover"
@@ -155,12 +152,6 @@ export function About() {
                     <h3 className="text-lg sm:text-xl text-[#0F0F12] mb-2">MKCL Authorized Center</h3>
                     <p className="text-sm sm:text-base text-[#4A4A4A]">
                       We are an authorized training and examination center for MS-CIT (Maharashtra State Certificate in Information Technology) by MKCL, Government of Maharashtra.
-                    </p>
-                  </div>
-                  <div>
-                    <h3 className="text-lg sm:text-xl text-[#0F0F12] mb-2">Alpha Groups and Co. Pvt. Ltd.</h3>
-                    <p className="text-sm sm:text-base text-[#4A4A4A]">
-                      Phoenix Tech Academy is a proud member of Alpha Groups and Co. Pvt. Ltd., bringing corporate expertise and professional standards to education.
                     </p>
                   </div>
                 </div>

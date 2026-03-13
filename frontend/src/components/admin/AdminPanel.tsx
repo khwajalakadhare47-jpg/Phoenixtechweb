@@ -23,7 +23,12 @@ export function AdminPanel({ onExitToSite }: AdminPanelProps) {
     useState<AdminSection>("dashboard");
 
   if (!isLoggedIn) {
-    return <AdminLogin onLoginSuccess={() => setCurrentSection("dashboard")} />;
+    return (
+      <AdminLogin
+        onLoginSuccess={() => setCurrentSection("dashboard")}
+        onExitToSite={onExitToSite}
+      />
+    );
   }
 
   const renderSection = () => {

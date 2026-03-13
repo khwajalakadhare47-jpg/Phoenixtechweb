@@ -31,9 +31,9 @@ export function Home({ onNavigate }: HomeProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-12 items-center">
             <div className="order-2 md:order-1">
               <div className="flex items-center gap-4 mb-6">
-                <img 
-                  src={logoImage} 
-                  alt="Phoenix Tech Academy Logo" 
+                <img
+                  src={logoImage}
+                  alt="Phoenix Tech Academy Logo"
                   className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 object-contain"
                 />
                 <div>
@@ -41,7 +41,7 @@ export function Home({ onNavigate }: HomeProps) {
                   <p className="text-sm sm:text-base text-[#7A7A7A]">From Ideas to Impact</p>
                 </div>
               </div>
-              
+
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-[#0F0F12] mb-4 sm:mb-6 leading-tight">
                 Welcome to Phoenix Tech Academy
               </h1>
@@ -49,14 +49,14 @@ export function Home({ onNavigate }: HomeProps) {
                 Empowering students with essential computer skills and technology education in Hadapsar, Pune.
               </p>
               <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4">
-                <Button 
+                <Button
                   className="bg-[#C9A24D] hover:bg-[#b8923d] text-white px-6 sm:px-8 py-4 sm:py-6 text-sm sm:text-base w-full sm:w-auto"
                   onClick={() => onNavigate("admissions")}
                 >
                   Enquire Now
                 </Button>
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="border-[#0F0F12] text-[#0F0F12] hover:bg-[#F7F8FA] px-6 sm:px-8 py-4 sm:py-6 text-sm sm:text-base w-full sm:w-auto"
                   onClick={() => onNavigate("courses")}
                 >
@@ -65,7 +65,7 @@ export function Home({ onNavigate }: HomeProps) {
               </div>
             </div>
             <div className="rounded-lg overflow-hidden shadow-lg order-1 md:order-2">
-              <img 
+              <img
                 src="https://images.unsplash.com/photo-1723987135977-ae935608939e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjb21wdXRlciUyMGNsYXNzcm9vbSUyMHN0dWRlbnRzJTIwbGVhcm5pbmd8ZW58MXx8fHwxNzcwMjExNzIwfDA&ixlib=rb-4.1.0&q=80&w=1080"
                 alt="Computer classroom"
                 className="w-full h-48 sm:h-64 md:h-full object-cover"
@@ -101,7 +101,7 @@ export function Home({ onNavigate }: HomeProps) {
             ))}
           </div>
           <div className="text-center mt-6 sm:mt-8">
-            <Button 
+            <Button
               variant="outline"
               className="border-[#C9A24D] text-[#C9A24D] hover:bg-[#C9A24D] hover:text-white px-6 sm:px-8 text-sm sm:text-base w-full sm:w-auto"
               onClick={() => onNavigate("courses")}
@@ -117,7 +117,7 @@ export function Home({ onNavigate }: HomeProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-12 items-center">
             <div className="rounded-lg overflow-hidden shadow-lg order-2 md:order-1">
-              <img 
+              <img
                 src="https://images.unsplash.com/photo-1764720572930-eb63afd14b06?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBjbGFzc3Jvb20lMjBpbnRlcmlvcnxlbnwxfHx8fDE3NzAxNDk1NTR8MA"
                 alt="Modern classroom"
                 className="w-full h-48 sm:h-64 md:h-full object-cover"

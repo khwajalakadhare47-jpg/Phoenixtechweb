@@ -23,27 +23,16 @@ export function Gallery() {
       <section className="py-8 sm:py-12 md:py-16 bg-[#F7F8FA]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {gallery.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
               {gallery.map((image) => (
-                <div
-                  key={image.id}
-                  className="group relative overflow-hidden rounded-lg shadow-md hover:shadow-xl transition-all bg-white"
-                >
+                <div key={image.id} className="group relative overflow-hidden rounded-md bg-white">
                   <div className="aspect-[4/3] overflow-hidden">
                     <img
                       src={image.url}
                       alt={image.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                      loading="lazy"
                     />
-                  </div>
-                  <div className="p-4">
-                    <h3 className="font-semibold text-[#0F0F12] mb-1">{image.title}</h3>
-                    <div className="flex items-center justify-between">
-                      <span className="px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-semibold capitalize">
-                        {image.category}
-                      </span>
-                      <span className="text-xs text-gray-500">{image.uploadedAt}</span>
-                    </div>
                   </div>
                 </div>
               ))}
@@ -66,7 +55,9 @@ export function Gallery() {
             Visit our Hadapsar center to see our state-of-the-art infrastructure and meet our expert faculty
           </p>
           <a
-            href="#contact"
+            href="https://www.google.com/maps/dir/?api=1&destination=Lane+No.+11-B,+Opposite+Etasha+Society,+Sayyad+Nagar,+Hadapsar,+Pune+411028"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-block px-6 sm:px-8 py-3 bg-[#C9A24D] hover:bg-[#b8923d] text-white rounded-lg transition-colors text-sm sm:text-base"
           >
             Get Directions

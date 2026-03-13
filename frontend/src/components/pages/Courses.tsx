@@ -74,7 +74,7 @@ export function Courses({ onNavigate }: CoursesProps) {
                   </div>
                 </div>
               </CardHeader>
-              
+
               <CardContent className="p-4 sm:p-6 md:p-8">
                 <p className="text-sm sm:text-base text-[#4A4A4A] mb-6 sm:mb-8 leading-relaxed">
                   {course.description}
@@ -115,7 +115,7 @@ export function Courses({ onNavigate }: CoursesProps) {
                 </div>
 
                 <div className="pt-4 sm:pt-6 border-t border-gray-100">
-                  <Button 
+                  <Button
                     className="bg-[#C9A24D] hover:bg-[#b8923d] text-white text-sm sm:text-base w-full sm:w-auto"
                     onClick={() => onNavigate("admissions")}
                   >
@@ -137,7 +137,7 @@ export function Courses({ onNavigate }: CoursesProps) {
           <p className="text-gray-300 mb-6 sm:mb-8 text-sm sm:text-base lg:text-lg px-4">
             Contact us for personalized guidance and course recommendations
           </p>
-          <Button 
+          <Button
             variant="outline"
             className="border-[#C9A24D] text-[#C9A24D] hover:bg-[#C9A24D] hover:text-white text-sm sm:text-base w-full sm:w-auto"
             onClick={() => onNavigate("contact")}
