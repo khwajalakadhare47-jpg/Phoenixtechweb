@@ -1,3 +1,4 @@
+import { useAdmin } from "../../contexts/AdminContext";
 import {
   Users,
   MessageSquare,
@@ -101,11 +102,13 @@ function StatCard({
 // ─── AdminDashboard ───────────────────────────────────────────────────────────
 
 export function AdminDashboard({ onNavigate, onExitToSite }: AdminDashboardProps) {
+  const { courses, responses, gallery } = useAdmin();
+
   const stats = {
-    totalVisitors: 1250,
-    admissionRequests: 24,
-    coursesCount: 8,
-    galleryImages: 42,
+    totalVisitors: 1250, // Currently no backend analytics implemented for visitors
+    admissionRequests: responses ? responses.length : 0,
+    coursesCount: courses ? courses.length : 0,
+    galleryImages: gallery ? gallery.length : 0,
   };
 
   const recentActivities = [

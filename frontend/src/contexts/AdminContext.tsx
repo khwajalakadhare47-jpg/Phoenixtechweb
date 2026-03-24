@@ -50,6 +50,7 @@ interface AdminContextType {
   responses: AdmissionResponse[];
   addResponse: (res: Omit<AdmissionResponse, "id" | "submittedAt" | "status">) => Promise<boolean>;
   updateResponseStatus: (id: string, status: AdmissionResponse["status"]) => Promise<void>;
+  deleteResponse: (id: string) => Promise<void>;
 }
 
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
@@ -303,12 +304,17 @@ export function AdminProvider({ children }: { children: ReactNode }) {
     );
   };
 
+  const deleteResponse = async (id: string) => {
+    await apiRequest(`/api/admissions/${id}`, { method: "DELETE" });
+    setResponses((prev) => prev.filter((r) => r.id !== id));
+  };
+
   return (
     <AdminContext.Provider value={{ 
       isLoggedIn, adminUsername, login, logout, 
       courses, addCourse, deleteCourse, updateCourse,
       gallery, addImage, deleteImage, 
-      responses, addResponse, updateResponseStatus 
+      responses, addResponse, updateResponseStatus, deleteResponse 
     }}>
       {children}
     </AdminContext.Provider>

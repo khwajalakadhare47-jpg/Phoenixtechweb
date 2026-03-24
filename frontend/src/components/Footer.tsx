@@ -1,66 +1,235 @@
-import { MapPin, Phone, Mail } from "lucide-react";
+import { MapPin, Phone, Mail, ArrowRight } from "lucide-react";
 import logoImage from "../assets/logophoneix.png";
 
 export function Footer() {
   return (
-    <footer className="bg-[#0F0F12] text-white mt-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+    <footer style={{
+      background: "#0F0F12",
+      color: "#FFFFFF",
+      position: "relative",
+      overflow: "hidden",
+    }}>
+      {/* Subtle top gradient */}
+      <div style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        height: "1px",
+        background: "linear-gradient(90deg, transparent, rgba(201, 162, 77, 0.3), transparent)",
+      }} />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" style={{ padding: "clamp(40px, 6vw, 64px) 16px" }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: "clamp(32px, 4vw, 48px)" }}>
           {/* About Section */}
           <div>
-            <div className="flex items-center gap-3 mb-4">
-              <img 
-                src={logoImage} 
-                alt="Phoenix Tech Academy Logo" 
-                className="h-12 w-12 sm:h-14 sm:w-14 object-contain"
-              />
+            <div style={{ display: "flex", alignItems: "center", gap: "14px", marginBottom: "20px" }}>
+              <div style={{ position: "relative" }}>
+                <div style={{
+                  position: "absolute",
+                  inset: "-3px",
+                  background: "radial-gradient(circle, rgba(201, 162, 77, 0.15), transparent 70%)",
+                  borderRadius: "50%",
+                  filter: "blur(6px)",
+                }} />
+                <img
+                  src={logoImage}
+                  alt="Phoenix Tech Academy Logo"
+                  style={{
+                    height: "48px",
+                    width: "48px",
+                    objectFit: "contain",
+                    position: "relative",
+                    zIndex: 1,
+                  }}
+                />
+              </div>
               <div>
-                <h3 className="text-[#C9A24D] text-base sm:text-lg font-semibold">Phoenix Tech Academy</h3>
-                <p className="text-gray-400 text-xs">From Ideas to Impact</p>
+                <h3 style={{
+                  color: "#FFFFFF",
+                  fontSize: "17px",
+                  fontWeight: 700,
+                  letterSpacing: "-0.01em",
+                  fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif",
+                }}>
+                  Phoenix Tech Academy
+                </h3>
+                <p style={{
+                  color: "#C9A24D",
+                  fontSize: "11px",
+                  fontWeight: 500,
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase",
+                }}>
+                  From Ideas to Impact
+                </p>
               </div>
             </div>
-            <p className="text-gray-300 text-xs sm:text-sm leading-relaxed">
-              Empowering students with computer skills and technology education in Pune.
+            <p style={{
+              color: "rgba(255, 255, 255, 0.5)",
+              fontSize: "14px",
+              lineHeight: 1.7,
+              maxWidth: "320px",
+              fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif",
+            }}>
+              Empowering students with computer skills and technology education in Hadapsar, Pune. Building careers since 2020.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-[#C9A24D] mb-3 sm:mb-4 text-base sm:text-lg">Quick Links</h3>
-            <ul className="space-y-1.5 sm:space-y-2 text-xs sm:text-sm">
-              <li><a href="#" className="text-gray-300 hover:text-[#C9A24D] transition-colors">MS-CIT Course</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-[#C9A24D] transition-colors">Basic Computer Course</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-[#C9A24D] transition-colors">Coding Classes</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-[#C9A24D] transition-colors">English Speaking</a></li>
+            <h3 style={{
+              color: "#FFFFFF",
+              fontSize: "14px",
+              fontWeight: 700,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+              marginBottom: "20px",
+              fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif",
+            }}>
+              Quick Links
+            </h3>
+            <ul style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+              {["MS-CIT Course", "Basic Computer Course", "Coding Classes", "English Speaking"].map((link) => (
+                <li key={link}>
+                  <a
+                    href="#"
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      color: "rgba(255, 255, 255, 0.5)",
+                      fontSize: "14px",
+                      textDecoration: "none",
+                      transition: "all 0.3s ease",
+                      fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = "#C9A24D";
+                      e.currentTarget.style.paddingLeft = "4px";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = "rgba(255, 255, 255, 0.5)";
+                      e.currentTarget.style.paddingLeft = "0";
+                    }}
+                  >
+                    <ArrowRight style={{ width: 12, height: 12, opacity: 0.6 }} />
+                    {link}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Contact Info */}
           <div className="sm:col-span-2 lg:col-span-1">
-            <h3 className="text-[#C9A24D] mb-3 sm:mb-4 text-base sm:text-lg">Contact Us</h3>
-            <div className="space-y-2 sm:space-y-3 text-xs sm:text-sm">
-              <div className="flex items-start gap-2 sm:gap-3">
-                <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C9A24D] mt-1 flex-shrink-0" />
-                <span className="text-gray-300">Lane No. 11-B, Opposite Etasha Society, Sayyad Nagar, Hadapsar, Pune 411028</span>
+            <h3 style={{
+              color: "#FFFFFF",
+              fontSize: "14px",
+              fontWeight: 700,
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+              marginBottom: "20px",
+              fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif",
+            }}>
+              Contact Us
+            </h3>
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              <div style={{ display: "flex", alignItems: "flex-start", gap: "14px" }}>
+                <div style={{
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "10px",
+                  background: "rgba(201, 162, 77, 0.1)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}>
+                  <MapPin style={{ width: 16, height: 16, color: "#C9A24D" }} />
+                </div>
+                <span style={{
+                  color: "rgba(255, 255, 255, 0.5)",
+                  fontSize: "13px",
+                  lineHeight: 1.6,
+                  fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif",
+                }}>
+                  Lane No. 11-B, Opposite Etasha Society, Sayyad Nagar, Hadapsar, Pune 411028
+                </span>
               </div>
-              <div className="flex items-center gap-2 sm:gap-3">
-                <Phone className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C9A24D] flex-shrink-0" />
-                <div className="text-gray-300">
-                  <a href="tel:+918605601030" className="hover:text-[#C9A24D] transition-colors">86056 01030</a>
-                  <span className="mx-2">|</span>
-                  <a href="tel:+918007577648" className="hover:text-[#C9A24D] transition-colors">80075 77648</a>
+              <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+                <div style={{
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "10px",
+                  background: "rgba(201, 162, 77, 0.1)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}>
+                  <Phone style={{ width: 16, height: 16, color: "#C9A24D" }} />
+                </div>
+                <div style={{
+                  color: "rgba(255, 255, 255, 0.5)",
+                  fontSize: "13px",
+                  fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif",
+                }}>
+                  <a href="tel:+918605601030" style={{ color: "inherit", textDecoration: "none", transition: "color 0.3s" }}
+                    onMouseEnter={(e) => e.currentTarget.style.color = "#C9A24D"}
+                    onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255, 255, 255, 0.5)"}
+                  >86056 01030</a>
+                  <span style={{ margin: "0 8px", opacity: 0.3 }}>|</span>
+                  <a href="tel:+918007577648" style={{ color: "inherit", textDecoration: "none", transition: "color 0.3s" }}
+                    onMouseEnter={(e) => e.currentTarget.style.color = "#C9A24D"}
+                    onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255, 255, 255, 0.5)"}
+                  >80075 77648</a>
                 </div>
               </div>
-              <div className="flex items-center gap-2 sm:gap-3">
-                <Mail className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#C9A24D] flex-shrink-0" />
-                <a href="mailto:info@phoenix-tech.in" className="text-gray-300 hover:text-[#C9A24D] transition-colors">info@phoenix-tech.in</a>
+              <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+                <div style={{
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "10px",
+                  background: "rgba(201, 162, 77, 0.1)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}>
+                  <Mail style={{ width: 16, height: 16, color: "#C9A24D" }} />
+                </div>
+                <a href="mailto:info@phoenix-tech.in" style={{
+                  color: "rgba(255, 255, 255, 0.5)",
+                  fontSize: "13px",
+                  textDecoration: "none",
+                  transition: "color 0.3s",
+                  fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif",
+                }}
+                  onMouseEnter={(e) => e.currentTarget.style.color = "#C9A24D"}
+                  onMouseLeave={(e) => e.currentTarget.style.color = "rgba(255, 255, 255, 0.5)"}
+                >
+                  info@phoenix-tech.in
+                </a>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-700 mt-6 sm:mt-8 pt-6 sm:pt-8 text-center text-xs sm:text-sm text-gray-400">
-          <p>&copy; 2026 Phoenix Tech Academy. All rights reserved.</p>
+        {/* Bottom bar */}
+        <div style={{
+          borderTop: "1px solid rgba(255, 255, 255, 0.06)",
+          marginTop: "clamp(32px, 4vw, 48px)",
+          paddingTop: "24px",
+          textAlign: "center",
+        }}>
+          <p style={{
+            color: "rgba(255, 255, 255, 0.3)",
+            fontSize: "13px",
+            fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif",
+          }}>
+            &copy; 2026 Phoenix Tech Academy. All rights reserved.
+          </p>
         </div>
       </div>
     </footer>

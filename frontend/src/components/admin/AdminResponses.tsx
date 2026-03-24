@@ -2,7 +2,7 @@ import React, { useState, useRef, useCallback, useEffect, useMemo } from "react"
 import {
   MessageSquare, Mail, Phone, Calendar, User,
   CheckCircle, AlertCircle, X, Search,
-  Clock, BookOpen, Shield, ChevronDown,
+  Clock, BookOpen, Shield, ChevronDown, Trash2
 } from "lucide-react";
 import { useAdmin, AdmissionResponse } from "../../contexts/AdminContext";
 
@@ -167,9 +167,10 @@ function StatusSelector({ response, onUpdate }: {
 
 // ─── Response Card ────────────────────────────────────────────────────────────
 
-function ResponseCard({ res, onUpdate }: {
+function ResponseCard({ res, onUpdate, onDelete }: {
   res: AdmissionResponse;
   onUpdate: (id: string, status: Status, name: string) => Promise<void>;
+  onDelete: (id: string, name: string) => Promise<void>;
 }) {
   const cfg = STATUS_CONFIG[res.status];
   const consentYes = normalizeConsent(res.consentToContact);
@@ -209,8 +210,29 @@ function ResponseCard({ res, onUpdate }: {
           </div>
         </div>
 
-        {/* Status selector */}
-        <StatusSelector response={res} onUpdate={onUpdate} />
+        {/* Status selector and Delete Button */}
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <StatusSelector response={res} onUpdate={onUpdate} />
+
+          <button
+            onClick={() => {
+              if (window.confirm(`Are you sure you want to delete the request from ${res.fullName}?`)) {
+                onDelete(res.id, res.fullName);
+              }
+            }}
+            title="Delete Request"
+            style={{
+              display: "flex", alignItems: "center", justifyContent: "center",
+              width: 32, height: 32, borderRadius: "50%",
+              background: "#fff1f2", border: "1px solid #fecdd3",
+              color: "#be123c", cursor: "pointer", transition: "all 0.2s"
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "#ffe4e6"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "#fff1f2"; }}
+          >
+            <Trash2 style={{ width: 14, height: 14 }} />
+          </button>
+        </div>
       </div>
 
       {/* ── Contact Row ──────────────────────────────────────────── */}
@@ -303,7 +325,7 @@ function Field({ icon, label, children }: { icon: React.ReactNode; label: string
 // ─── AdminResponses ───────────────────────────────────────────────────────────
 
 export function AdminResponses() {
-  const { responses, updateResponseStatus } = useAdmin();
+  const { responses, updateResponseStatus, deleteResponse } = useAdmin();
   const { toasts, show: showToast, remove: removeToast } = useToast();
 
   const [searchTerm,     setSearchTerm]     = useState("");
@@ -323,6 +345,15 @@ export function AdminResponses() {
       showToast(`${name}'s status updated to "${STATUS_CONFIG[status].label}".`, "success");
     } catch (err: any) {
       showToast(err?.message || "Failed to update status. Please try again.", "error");
+    }
+  };
+
+  const handleDelete = async (id: string, name: string) => {
+    try {
+      await deleteResponse(id);
+      showToast(`Request from ${name} deleted successfully.`, "success");
+    } catch (err: any) {
+      showToast(err?.message || "Failed to delete request.", "error");
     }
   };
 
@@ -459,7 +490,7 @@ export function AdminResponses() {
         ) : filtered.length > 0 ? (
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {filtered.map((res) => (
-              <ResponseCard key={res.id} res={res} onUpdate={handleStatusUpdate} />
+              <ResponseCard key={res.id} res={res} onUpdate={handleStatusUpdate} onDelete={handleDelete} />
             ))}
           </div>
         ) : (
